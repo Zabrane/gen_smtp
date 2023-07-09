@@ -83,7 +83,8 @@ mail_plain(From, To, Subject, Body, Opts) ->
           {<<"Subject">>, Subject},
           {<<"Content-Type">>, proplists:get_value(<<"Content-Type">>, AddHeaders, <<"text/plain; charset=utf-8">>)}
           | proplists:delete(<<"Content-Type">>,  AddHeaders)],
-         [{<<"transfer-encoding">>, <<"base64">>}],
+         %%[{<<"transfer-encoding">>, <<"base64">>}],
+         #{transfer_encoding => <<"base64">>},
          Body},
     FromAddr = extract_addr_rfc822(From),
     {FromAddr, extract_addr_rfc822(To), mimemail:encode(Mimemail)}.
@@ -128,7 +129,8 @@ mail_with_attachments(From, To, Cc, Subject, Body, Attachments) ->
     Mimemail = {<<"multipart">>,
                <<"mixed">>,
                add_copie(Opts, Cc),
-               [],
+               %%[],
+               #{},
                [MimeBody | MimeAttachments]},
     FromAddr = extract_addr_rfc822(From),
     {FromAddr, extract_addr_rfc822(recipients(To, Cc)), mimemail:encode(Mimemail)}.
@@ -176,4 +178,3 @@ extract_addr_rfc822(Rfc822) ->
 
 split_addr(MailAddr) ->
     binary:split(MailAddr, <<"@">>).
-
