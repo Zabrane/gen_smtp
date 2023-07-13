@@ -110,15 +110,15 @@ mail_with_attachments(From, To, Cc, Subject, Body, Attachments) ->
                 [{<<"Content-Type">>, <<"text/html;charset=utf-8">>},
                  {<<"Content-Transfer-Encoding">>, <<"quoted-printable">>},
                  {<<"Content-Disposition">>, <<"inline">>}],
-                [],
+                #{},
                 Body},
     MimeAttachments = [begin
                            [Ct1, Ct2] = binary:split(MimeType, <<"/">>),
                            {Ct1, Ct2,
                             [{<<"Content-Transfer-Encoding">>, <<"base64">>}],
-                            [{<<"disposition">>, <<"attachment">>},
-                             {<<"disposition-params">>,
-                              [{<<"filename">>, Name}]}],
+                            #{ disposition => <<"attachment">>,
+                               disposition_params => [{<<"filename">>, Name}]
+                            },
                             AtBody}
                        end
                        || {Name, MimeType, AtBody} <- Attachments],
